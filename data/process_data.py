@@ -12,7 +12,7 @@ def load_data(messages_filepath:str, categories_filepath:str):
     """
     messages = pd.read_csv(messages_filepath, encoding="utf-8")
     categories = pd.read_csv(categories_filepath)
-    df = pd.merge(messages, categories, how="left",on="id")
+    df = pd.merge(messages, categories, how="left", on="id")
     return df
 
 
