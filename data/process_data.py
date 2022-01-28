@@ -56,6 +56,9 @@ def clean_data(df):
     # Step 6
     df.drop_duplicates(inplace=True)
 
+    # My personal exploration showed me that there are non-binary data left in 'related' column.
+    df = df[df['related']!=2]
+
     return df
 
 
