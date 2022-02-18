@@ -1,20 +1,33 @@
 # Disaster Response Pipeline Project
 In this repository I share the code underlying the text-classifier web app that I published here:
->
-> 
+> https://disaster-nlp-app.herokuapp.com
+
+As you can see from the web-app, the aim of this project is to build a text classsifier to detect disaster messages.
+![](app/templates/static/ss_app.png)
+
+## Organization of the Repository
+**data** folder contains **ETL** processes.
+**models** folder contains the **ML Pipelines**
+**app** folder contains web-app related code. 
+
+**requirements.txt** contains dependencies
+**nltk.txt** contains nltk dependencies for **heroku** environment.
+
 ## Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
-    - To run ETL pipeline that cleans data and stores in database
+    - To run ETL pipeline that cleans data and stores in database, first cd into data directory.
    
-      >`python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
+      >`python process_data.py '\
+      'disaster_messages.csv disaster_categories.csv '\
+      'DisasterResponse PostEtl`
    
-    - To run ML pipeline that trains classifier and saves
-      > `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+    - To run ML pipeline that trains classifier and saves, first cd into models directory.
+      > `python train_classifier.py ../data/DisasterResponse.db PostETL ClassifierName.pkl`
 
 2. Run the following command in the app's directory to run your web app.
 
-      > `python run.py`
+   >`python run.py`
 
 3. Go to http://0.0.0.0:3001/
 
@@ -37,8 +50,14 @@ was creating incompatibilities and for this reason I decided not to continue wit
 
 ### Reference
 The plotly script was not visible on my app. I tried my own solutions but couldn't figure out the reason by myself. I 
-learned the solution to this problem at:
+learned the solution to this problem at
 >
 > https://github.com/quantumphysicist/Disaster-Response-Pipelines/blob/main/app/templates/master.html
 
-I used the same library as reference for my visualisations aesthetics as well. I would like to thank to the author. 
+I used the the repo above as reference for my visualisations aesthetics as well. I would like to thank the author. 
+
+The second problem I faced was deploying the app to **Heroku**. I learned about nltk.txt file from the Heroku error 
+messages, however, even after fixing the nltk issues, the was not running. I learned about the proper procfile & 
+def main() configurations from this repository.
+>
+> https://github.com/madkehl/DisasterResponse/tree/main/web_app
