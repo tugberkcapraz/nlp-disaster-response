@@ -8,7 +8,8 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+import sklearn.externals
+import joblib
 from sqlalchemy import create_engine
 
 
@@ -26,31 +27,33 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
-
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('PostEtl', engine)
+print(df.head())
 # load model
-model = joblib.load("../models/your_model_name.pkl")
-
+model = joblib.load("../models/CatClassifier.pkl")
+print("model_loaded")
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
 def index():
-    
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
-    
-    # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+
+    # extract data needed for first Graph
+    genre_df = df.groupby('genre')['message'].count().reset_index()
+    genre_names = genre_df["genre"]
+    genre_counts = genre_df["message"]
+
+    # create the graph
     graphs = [
         {
             'data': [
                 Bar(
                     x=genre_names,
-                    y=genre_counts
+                    y=genre_counts,
+                    width=.5,
+                    textfont = {'family' : 'Arial'},
+                    marker=dict(color='silver')
                 )
             ],
 
@@ -61,15 +64,54 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
-                }
-            }
+
+                },
+                'padding': 150
+
+            },
+
         }
     ]
-    
+    ## second graph
+    # extract data needed for second graph
+    df["len_msg"] = df.message.str.len()
+    col_names = []
+    len_message = []
+    for i in range(4, df.shape[1]-1, 1):
+        len_message.append(df.loc[df[df.columns[i]] == 1]["len_msg"].mean())
+        col_names.append(df.columns[i])
+
+    # create the second graph
+    graphs.append({
+        'data': [
+            Bar(
+                x=col_names,
+                y=len_message,
+                orientation = 'v',
+                width=.5,
+                textfont = {'family' : 'Arial'},
+                marker=dict(color='silver')
+            )
+        ],
+
+        'layout': {
+            'title': 'Average Message Length per Category',
+            'yaxis': {
+                'title': "Average Message Lenght"
+            },
+            'xaxis': {
+                'title': "Category",
+                'automargin': True
+            },
+            'padding': 150
+        },
+
+    })
+
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
-    
+
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
@@ -78,13 +120,13 @@ def index():
 @app.route('/go')
 def go():
     # save user input in query
-    query = request.args.get('query', '') 
+    query = request.args.get('query', '')
 
     # use model to predict classification for query
     classification_labels = model.predict([query])[0]
     classification_results = dict(zip(df.columns[4:], classification_labels))
 
-    # This will render the go.html Please see that file. 
+    # This will render the go.html Please see that file.
     return render_template(
         'go.html',
         query=query,
@@ -93,7 +135,7 @@ def go():
 
 
 def main():
-    app.run(host='0.0.0.0', port=3001, debug=True)
+#    app.run(host='0.0.0.0', port=3001, debug=True)
 
 
 if __name__ == '__main__':
