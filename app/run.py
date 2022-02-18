@@ -1,4 +1,6 @@
 import json
+import os
+import sys
 import plotly
 import pandas as pd
 
@@ -135,8 +137,19 @@ def go():
 
 
 def main():
-    app.run(debug=True)
-#
-#
+    '''
+    as the main function this runs whenever the file is called
+
+    it sets the port and then runs the app through the desired port
+    '''
+
+    if len(sys.argv) == 2:
+        app.run(host='0.0.0.0', port=int(sys.argv[1]), debug=True)
+    else:
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
+
+
+
 if __name__ == '__main__':
     main()
