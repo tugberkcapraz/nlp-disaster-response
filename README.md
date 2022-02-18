@@ -6,12 +6,16 @@ As you can see from the web-app, the aim of this project is to build a text clas
 ![](app/templates/static/ss_app.png)
 
 ## Organization of the Repository
-**data** folder contains **ETL** processes.
-**models** folder contains the **ML Pipelines**
-**app** folder contains web-app related code. 
-
-**requirements.txt** contains dependencies
-**nltk.txt** contains nltk dependencies for **heroku** environment.
+>
+> **data** folder contains **ETL** processes.
+> 
+> **models** folder contains the **ML Pipelines**
+> 
+> **app** folder contains web-app related code. 
+> 
+> **requirements.txt** contains dependencies
+> 
+> **nltk.txt** contains nltk dependencies for **heroku** environment.
 
 ## Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
