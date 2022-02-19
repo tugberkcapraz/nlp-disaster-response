@@ -3,19 +3,48 @@ In this repository I share the code underlying the text-classifier web app that 
 > https://disaster-nlp-app.herokuapp.com
 
 As you can see from the web-app, the aim of this project is to build a text classsifier to detect disaster messages.
+
 ![](app/templates/static/ss_app.png)
 
-## Organization of the Repository
->
-> **data** folder contains **ETL** processes.
-> 
-> **models** folder contains the **ML Pipelines**
-> 
-> **app** folder contains web-app related code. 
-> 
-> **requirements.txt** contains dependencies
-> 
-> **nltk.txt** contains nltk dependencies for **heroku** environment.
+## Summary
+Be it man-made or caused by natural reasons, sadly, disasters are fundamental part of human life. We can't eliminate them
+all together. However, what we can do is reacting to them smartly. One step towards achieving smart action is reducing the 
+response time. As response time can decide life and death under such circumstances, being fast and proactive is vital.
+
+From the accuracy perspective, human intuition is still unmatched by our state-of-the-art algorithms. But human intuition 
+comes with its price. It's not guaranteed to be fast enough and, more importantly it's not scalable. When a disaster 
+happens we can't be sure that we'll have enough workforce to distinguish distress calls from regular interactions. 
+But algorithms can serve us 24/7 and can cope with huge amount of data. For this reason I tried to build a  web-app which
+can take any ext and tell us whether it's disaster related or not. 
+
+As you'll read in the Remarks section, current version of this app has severe limitations both from the accuracy and 
+scalability perspective. Yet, this is a step forward. In ideal settings, an app like this can help local authorities 
+proactively help people in disaster conditions. Automatic detection of disaster situations and sendin immediate alerts 
+to the authorities not only reduce response time, it also increases the proactivity. Aid comes to you before you reach 
+the authorities just because some people tweeted about it, wouldn't you like that?
+ 
+
+## Structure of the Repository
+```
+app
+| - template
+| | | - static # directory that contains images
+| |- master.html # main page of web app
+| |- go.html # classification result page of web app
+|- run.py # Flask file that runs app
+data
+|- disaster_categories.csv # data to process
+|- disaster_messages.csv # data to process
+|- process_data.py # file to handle ETL
+|- DisasterResponse.db # database to save clean data to
+models
+| | | - catboost_info # training output of CatBoostClassifier
+|- train_classifier.py # file to handle NLP pipelines
+|- classifier.pkl # saved model
+README.md
+nltk.txt # nltk dependencies for heroku. No need for local
+Procfile # directions for Heroku to find the web-app
+```
 
 ## Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
@@ -51,6 +80,10 @@ The categories are not equally represented in the dataset. There are even some c
 called class imbalance. In this project, I took no action to counter class imbalance problem. In the mockup phase, I 
 attempted to use SMOTE from imbalanced learn library. But both sklearn pipeline and encoding of the target (multilabel) 
 was creating incompatibilities and for this reason I decided not to continue with this line.
+
+### Scalability
+As this is a demo-app, I used heroku to quickly deploy it. The negative part of Heroku is its free tier limitations. The
+app loads slowly and it wouldn't be reliable if more people tries to access it at the same time. 
 
 ### Reference
 The plotly script was not visible on my app. I tried my own solutions but couldn't figure out the reason by myself. I 
